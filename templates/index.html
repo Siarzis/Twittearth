@@ -1,0 +1,43 @@
+<!--  -->
+<!-- The <!DOCTYPE html> declaration defines this document to be HTML5 -->
+<!DOCTYPE html>
+
+<!-- The <html> element is the root element of an HTML page -->
+<html lang="en">
+
+<!-- The <head> element contains meta information about the document -->
+<head>
+	<!-- The <title> element specifies a title for the document -->
+	<title>Event Detection</title>
+	<!-- Always include the HTML5 doctype at the beginning of the page, along with the lang attribute and the correct character set: -->
+	<meta charset="utf-8">
+	<!-- Bootstrap 3 is designed to be responsive to mobile devices. Mobile-first styles are part of the core framework -->
+	<!-- To ensure proper rendering and touch zooming, add the following <meta> tag inside the <head> element: -->
+	<!-- The width=device-width part sets the width of the page to follow the screen-width of the device (which will vary depending on the device) -->
+	<!-- The initial-scale=1 part sets the initial zoom level when the page is first loaded by the browser -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- We use the following 3 commands to import Bootstrap via CDN (Content Delivery Network) -->
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<!-- Latest compiled JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<!-- Import socket.io in html -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+	<!-- When trying to import javascript files like this 'js' folder is mandatory! -->
+	<script src="/static/js/liveupdate.js"></script>
+</head>
+
+<body>
+	<!-- Bootstrap requires a containing element to wrap site contents -->
+	<!-- We will use the .container class which provides a responsive fixed width container -->
+	<div class="container">
+		<h1>Twittearth</h1>
+		<p>Welcome to Twittearth. The web application that informs you about earthquakes in Greece!</p>
+		<button id="1">Import tweets</button>
+		<div id="2"></div>
+	</div>
+</body>
+
+</html>
