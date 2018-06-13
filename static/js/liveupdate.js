@@ -27,7 +27,6 @@ $(document).ready(function(){
         // The jQuery #id selector uses the id attribute of an HTML tag to find the specific element.
         // An id should be unique within a page, so you should use the #id selector when you want to find a single, unique element.
         // To find an element with a specific id, write a hash character, followed by the id of the HTML element:
-        //$('#log').append('&lt;p&gt;Received: ' + msg.data + '&lt;/p&gt;');
-        $('#2').append('<p>Received: ' + msg.data + '</p>');
+        $('#2').append('<p>User: ' + msg.username + ',' + 'Tweet: ' + msg.text + '</p>');
     });
 });
