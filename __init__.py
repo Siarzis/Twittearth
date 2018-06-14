@@ -8,22 +8,26 @@ from tweepy.streaming import StreamListener
 
 from threading import Thread
 
-import time
-import json
+import time, json
 
 # elements required for Twitter API usage
 # consumer key, consumer secret, access token, access secret.
-ckey = ""
-csecret = ""
-atoken = ""
-asecret = ""
+ckey = "Es3lDZ9L6ukHRUl1ya5uOTPtx"
+csecret = "4UmLc6z65P9Z7nveZnBKssKEnPV71svogCwvhnKaIvM44syi5B"
+atoken = "370737927-rr0xbO21qRS92QgCLqvU9qg1FDqic6vuWTlncT0x"
+asecret = "ql8fXdZ4acRTDNAi4aZHq1OefpIz6qt8eTXQdj0s79IWK"
 
 auth = OAuthHandler(ckey, csecret)
 auth.set_access_token(atoken, asecret)
 
+# Set this variable to "threading", "eventlet" or "gevent" to test the
+# different async modes, or leave it set to None for the application to choose
+# the best option based on installed packages.
+async_mode = None
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(app)
+socketio = SocketIO(app, async_mode=async_mode)
 
 tweetThread = None
 
@@ -41,9 +45,7 @@ class listener(StreamListener):
 			text = tweet_dict["text"]
 			# removes all newline characters from tweet's text
 			text = text.replace('\n', '')
-			print ('karana')
 			socketio.emit('show', {'username': username, 'text': text})
-			print ('gemen')
 		except KeyError:
 			pass
 	
@@ -52,12 +54,14 @@ class listener(StreamListener):
 
 def background_thread():
 
-	print ('Background Stuff')
-	while True:
-		time.sleep(1)
-		t = str(time.clock())
-		twitterStream = Stream(auth, listener())
-		twitterStream.filter(track=['και'])
+	print ('Background stuff activated!')
+
+	twitterStream = Stream(auth, listener())
+	twitterStream.filter(track=['και'])
+	#while True:
+	#	time.sleep(1)
+	#	twitterStream = Stream(auth, listener())
+	#	twitterStream.filter(track=['και'])
 
 # The routes are the different URLs that the application implements
 # In Flask, handlers for the application routes are written as Python functions, called view functions
@@ -75,16 +79,16 @@ def index():
 
 @socketio.on('connect', namespace='/')
 def on_connect():
-	global tweetThread
 	print ('Client connected!')
-	# emit('show', {'data': 'Siarzis has joined'})
-	#username = 'Siarzis'
-	#text = 'Flask Socket Project'
-	#emit('show', {'username': username, 'text': text})
-	#twitterStream = Stream(auth, listener())
-	#twitterStream.filter(track=['και'])
+
+@socketio.on('enable stream', namespace='/')
+def enable():
+	global tweetThread
 	if tweetThread is None:
-		tweetThread = Thread(target=background_thread)
+		# Some threads do background tasks, like sending keepalive packets, or performing periodic garbage collection
+		# or whatever. These are only useful when the main program is running
+		# and it's okay to kill them off once the other, non-daemon, threads have exited.
+		tweetThread = Thread(target=background_thread, daemon=True)
 		tweetThread.start()
 
 if __name__ == '__main__':
