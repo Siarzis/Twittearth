@@ -2,14 +2,30 @@ $(document).ready(function(){
 
 	// start up the SocketIO connection to the server - the namespace 'test' is also included here if necessary
 	var socket = io.connect('http://' + document.domain + ':' + location.port + '/');
+	var userArray = [];
+	var tweetArray = [];
 
 	$("#1").on("click", function() {
 	    socket.emit('enable stream');
 	});
 
-	socket.on('show', function(msg) {
-		console.log('Hello world!');
-		// $('#2').append('<li class="list-group-item">User: ' + msg.username + ',' + 'Tweet: ' + msg.text + '</li>');
-		$('#2').append('<tr><td>' + msg.username + '</td><td>'  + msg.text + '</td></tr>');
+	socket.on('tweet display', function(msg) {
+		// length is defined for better code performance. Check 'https://www.w3schools.com/js/js_performance.asp'
+		var length = tweetArray.length;
+
+		if (length >= 10) {
+			userArray.shift();
+			tweetArray.shift();
+		}
+
+		userArray.push(msg.username);
+		tweetArray.push(msg.text);
+
+		var tweetsHTMLTable = '';
+
+		for (var i = 0; i < length; i++) {
+			tweetsHTMLTable += '<tr><td>' + userArray[i] + '</td><td>'  + tweetArray[i] + '</td></tr>'
+		}
+		$('#2').html(tweetsHTMLTable);
 	});
 });
