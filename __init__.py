@@ -5,7 +5,7 @@ from tweepy import OAuthHandler
 from tweepy import Stream
 from tweepy.streaming import StreamListener
 
-from .classifier import Classifier
+from classifier import Classifier
 
 from threading import Thread
 
@@ -13,10 +13,10 @@ import json
 
 # elements required for Twitter API usage
 # consumer key, consumer secret, access token, access secret.
-ckey = ""
-csecret = ""
-atoken = ""
-asecret = ""
+ckey = "Es3lDZ9L6ukHRUl1ya5uOTPtx"
+csecret = "4UmLc6z65P9Z7nveZnBKssKEnPV71svogCwvhnKaIvM44syi5B"
+atoken = "370737927-rr0xbO21qRS92QgCLqvU9qg1FDqic6vuWTlncT0x"
+asecret = "ql8fXdZ4acRTDNAi4aZHq1OefpIz6qt8eTXQdj0s79IWK"
 
 auth = OAuthHandler(ckey, csecret)
 auth.set_access_token(atoken, asecret)
@@ -31,6 +31,7 @@ app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, async_mode=async_mode)
 
 tweetThread = None
+
 
 class Listener(StreamListener):
 
@@ -51,25 +52,30 @@ class Listener(StreamListener):
 			pass
 	
 	def on_error(self, status):
-		print (status)
+		print(status)
+
 
 def background_thread():
 
-	print ('Background stuff activated!')
+	print('Background stuff activated!')
 
-	twitterStream = Stream(auth, listener())
-	twitterStream.filter(track=['nba'])
+	twitterStream = Stream(auth, listener=Listener())
+	twitterStream.filter(track=['trump'], async=True)
+
 
 @app.route('/')
 def index():
 	return render_template('index.html')
 
+
 @socketio.on('connect', namespace='/')
 def on_connect():
-	print ('Client connected!')
+	print('Client connected!')
+
 
 @socketio.on('enable stream', namespace='/')
 def on_enable():
+
 	global tweetThread
 	if tweetThread is None:
 		# Some threads do background tasks, like sending keepalive packets, or performing periodic garbage collection
@@ -78,16 +84,19 @@ def on_enable():
 		tweetThread = Thread(target=background_thread, daemon=True)
 		tweetThread.start()
 
+
 @socketio.on('train classifier', namespace='/')
 def on_train():
 	c = Classifier()
 	c.train()
-	print (c.train_attributes['features'][725])
-	print (c.train_attributes['target'][725])
+	print(c.train_attributes['features'][725])
+	print(c.train_attributes['target'][725])
+
 
 @socketio.on('disconnect', namespace='/')
 def on_disconnect():
 	print('Client disconnected')
+
 
 if __name__ == '__main__':
 	socketio.run(app, debug=True)
