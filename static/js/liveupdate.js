@@ -4,9 +4,19 @@ $(document).ready(function(){
 	var socket = io.connect('http://' + document.domain + ':' + location.port + '/');
 	var userArray = [];
 	var tweetArray = [];
+	// user must firstly train the model; use flag instead of local storage so every time user
+	// refreshes the page training session has to be repeated
+	var flag = false;
 
 	$("#1").on("click", function() {
-	    socket.emit('enable stream');
+		if (flag == true) {
+			socket.emit('enable stream')
+		}
+	});
+
+	$("#3").on("click", function() {
+		socket.emit('train classifier');
+		flag = true
 	});
 
 	socket.on('tweet display', function(msg) {

@@ -6,6 +6,7 @@ from tweepy import Stream
 from tweepy.streaming import StreamListener
 
 from classifier import Classifier
+from parameters import search_queries
 
 from threading import Thread
 
@@ -60,7 +61,7 @@ def background_thread():
 	print('Background stuff activated!')
 
 	twitterStream = Stream(auth, listener=Listener())
-	twitterStream.filter(track=['trump'], async=True)
+	twitterStream.filter(track=[' '.join(search_queries)], async=True)
 
 
 @app.route('/')
