@@ -53,6 +53,7 @@ class Listener(StreamListener):
 			pass
 	
 	def on_error(self, status):
+
 		print(status)
 
 
@@ -60,8 +61,8 @@ def background_thread():
 
 	print('Background stuff activated!')
 
-	twitterStream = Stream(auth, listener=Listener())
-	twitterStream.filter(track=[' '.join(search_queries)], async=True)
+	twitter_stream = Stream(auth, listener=Listener())
+	twitter_stream.filter(track=search_queries, async=True)
 
 
 @app.route('/')
