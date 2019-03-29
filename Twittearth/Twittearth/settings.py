@@ -31,6 +31,9 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
+    'monitor',
+    'train',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -67,7 +70,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'Twittearth.wsgi.application'
+# WSGI_APPLICATION = 'Twittearth.wsgi.application'
 
 
 # Database
@@ -99,6 +102,20 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Channels
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'asgi_redis.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+            'capacity': 100,
+        },
+        'ROUTING': 'Twittearth.routing.channel_routing'
+    }
+}
+
+ASGI_APPLICATION = 'Twittearth.routing.application'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
