@@ -1,6 +1,6 @@
 # Django Framework imports
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.views import View
 
 # Classifier imports
@@ -2873,4 +2873,4 @@ class Classifier(View):
             self.train_attributes['features'].append(extracted_features)
             self.train_attributes['target'].append(row['Target'])
 
-        return HttpResponse(self.train_attributes['target'])
+        return JsonResponse(self.train_attributes)
