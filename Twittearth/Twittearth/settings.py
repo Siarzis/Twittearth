@@ -104,15 +104,14 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Channels
 
-#CHANNEL_LAYERS = {
-#    'default': {
-#        'CONFIG': {
-#            'hosts': [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
-#            'capacity': 100,
-#        },
-#        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-#    }
-#}
+CHANNEL_LAYERS = {
+    'default': {
+        'CONFIG': {
+            'hosts': [('127.0.0.1', 6379)],
+        },
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+    }
+}
 
 ASGI_APPLICATION = 'Twittearth.routing.application'
 
