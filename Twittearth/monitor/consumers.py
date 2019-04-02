@@ -1,51 +1,46 @@
-from asgiref.sync import async_to_sync
-from channels.generic.websocket import WebsocketConsumer
+from channels.generic.websocket import AsyncWebsocketConsumer
 
 import json
 
 
-class MonitorConsumer(WebsocketConsumer):
+class MonitorConsumer(AsyncWebsocketConsumer):
 
-    def connect(self):
+    async def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
-        self.room_group_name = 'chat_%s' % self.room_name
 
         # join room group
-        async_to_sync(self.channel_layer.group_add)(
+        await self.channel_layer.group_add(
             self.room_name,
             self.channel_name
         )
 
-        self.accept()
+        await self.accept()
 
-    def disconnect(self, close_code):
-        async_to_sync(self.channel_layer.group_discard)(
-            self.room_group_name,
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(
+            self.room_name,
             self.channel_name
         )
         # leave room group
 
     # be careful with the arguments in receive() function
-    def receive(self, text_data=None, bytes_data=None):
+    async def receive(self, text_data=None, bytes_data=None):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
 
         # send message to room group
-        async_to_sync(self.channel_layer.group_send)(
-            self.room_group_name,
+        await self.channel_layer.group_send(
+            self.room_name,
             {
                 'type': 'chat_message',
                 'message': message
             }
         )
-        # self.send(text_data=json.dumps({
-        #    'message': message
-        # }))
 
-    def chat_message(self, event):
+    async def chat_message(self, event):
         message = event['message']
         # send message to WebSocket
 
-        self.send(text_data=json.dumps({
+        await self.send(text_data=json.dumps({
             'message': message
         }))
